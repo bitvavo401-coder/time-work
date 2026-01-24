@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Task Work System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="w-full max-w-md px-4">
+        <div class="glass-card rounded-[2.5rem] pt-8 md:pt-10 pb-6 text-center relative overflow-hidden">
+            <!-- Header -->
+            <div class="mb-8 px-8">
+                <h1 class="text-xl font-bold tracking-tight mb-2">AUTOMATED TASK WORK SYSTEM</h1>
+                <p class="text-slate-400 text-sm leading-relaxed px-4">
+                    Sistem akan memproses secara otomatis hingga waktu yang ditentukan selesai.
+                </p>
+            </div>
+            <!-- Timer Circle -->
+            <div class="relative flex justify-center items-center mb-10 px-8">
+                <svg class="w-64 h-64">
+                    <!-- Background Circle -->
+                    <circle
+                        class="text-slate-800"
+                        stroke-width="8"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="110"
+                        cx="128"
+                        cy="128"
+                    />
+                    <!-- Progress Circle -->
+                    <circle
+                        id="progress-circle"
+                        class="step-transition"
+                        stroke-width="8"
+                        stroke-linecap="round"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="110"
+                        cx="128"
+                        cy="128"
+                        style="stroke-dasharray: 691; stroke-dashoffset: 0;"
+                    />
+                </svg>
+                <!-- Timer Content -->
+                <div class="absolute flex flex-col items-center">
+                    <span id="timer-display" class="timer-font text-6xl font-bold tracking-tighter">05:00</span>
+                    <span class="text-xs tracking-[0.3em] text-slate-500 mt-2 uppercase font-semibold">Sisa Waktu</span>
+                </div>
+            </div>
+            <!-- Action Buttons Container -->
+            <div id="controls" class="space-y-4 px-8 mb-8">
+                <!-- State 1: Start -->
+                <button id="btn-start" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95 glow-cyan">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5.14v14c0 .86.84 1.4 1.58.97l12-7c.74-.43.74-1.51 0-1.94l-12-7c-.74-.43-1.58.11-1.58.97z"/>
+                    </svg>
+                    MULAI
+                </button>
+                <!-- State 2: Progress -->
+                <div id="status-progress" class="hidden w-full bg-slate-800/50 border border-slate-700 text-amber-400 py-4 px-6 rounded-2xl flex items-center justify-center gap-3 animate-pulse-slow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="font-medium">Work in progress...</span>
+                </div>
+                <!-- State 3: Finished -->
+                <div id="state-finished" class="hidden space-y-4">
+                    <div class="w-full bg-green-500/10 border border-green-500/30 text-green-400 py-4 px-6 rounded-2xl flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="font-semibold">Waktu Selesai!</span>
+                    </div>
+                    <!-- Tombol Cek Komisi dengan fungsi kembali ke halaman sebelumnya -->
+                    <button onclick="window.history.back()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95 glow-green">
+                        Cek Komisi Sekarang
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Teks Berjalan (Marquee) -->
+            <div class="marquee-container mb-6">
+                <div class="marquee-content text-xs font-medium uppercase tracking-widest">
+                   &bull; Sistem akan memproses secara otomatis hingga waktu yang di tentukan selesai &bull; Sistem akan memproses secara otomatis hingga waktu yang di tentukan selesai 
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="text-[10px] text-slate-500 uppercase tracking-widest opacity-60">
+                &copy; 2016 - 2025 Guccio Gucci S.p.A.
+            </div>
+        </div>
+        <script>        const btnStart = document.getElementById('btn-start');
+        const statusProgress = document.getElementById('status-progress');
+        const stateFinished = document.getElementById('state-finished');
+        const timerDisplay = document.getElementById('timer-display');
+        const progressCircle = document.getElementById('progress-circle');
+
+        let timeLeft = 300; 
+        const totalTime = 300;
+        const radius = 110;
+        const circumference = 2 * Math.PI * radius;
+        let timerId = null;
+
+        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+        progressCircle.style.strokeDashoffset = 0;
+        progressCircle.classList.add('text-cyan-400');
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const offset = circumference - (timeLeft / totalTime) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+
+            if (timeLeft <= 60) {
+                progressCircle.classList.remove('text-cyan-400');
+                progressCircle.classList.add('text-red-500');
+                timerDisplay.classList.add('text-red-500');
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                showFinishedState();
+            } else {
+                timeLeft--;
+            }
+        }
+
+        function showFinishedState() {
+            statusProgress.classList.add('hidden');
+            stateFinished.classList.remove('hidden');
+            progressCircle.style.strokeDashoffset = circumference;
+            progressCircle.classList.remove('text-red-500');
+            progressCircle.classList.add('text-slate-800');
+        }
+
+        btnStart.addEventListener('click', () => {
+            btnStart.classList.add('hidden');
+            statusProgress.classList.remove('hidden');
+            updateTimer();
+            timerId = setInterval(updateTimer, 1000);
+        });
+</script>
+  </div>
+</body>
+</html>
