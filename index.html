@@ -2,153 +2,491 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automated Task Work System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AutoTask Pro | Executive System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at 30% 40%, #0a0a0a, #000000);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: #f8fafc;
+            padding: 1rem;
+            position: relative;
+        }
+
+        /* Animated background particles effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(90deg, rgba(255,0,0,0.03) 0px, rgba(255,0,0,0.03) 1px, transparent 1px, transparent 100px),
+                repeating-linear-gradient(0deg, rgba(255,0,0,0.03) 0px, rgba(255,0,0,0.03) 1px, transparent 1px, transparent 100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glass-card {
+            background: rgba(5, 8, 15, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.25);
+            box-shadow: 0 0px 50px -12px rgba(0, 0, 0, 0), 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, rgba(239,68,68,0.3), rgba(239,68,68,0), rgba(239,68,68,0.1));
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .timer-font {
+            font-family: 'Orbitron', 'JetBrains Mono', monospace;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .progress-ring {
+            transition: stroke-dashoffset 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* GLOW MERAH PREMIUM */
+        .glow-red-premium {
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.6), 0 0 60px rgba(239, 68, 68, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glow-green-premium {
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.5);
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* Animasi teks berkedip */
+        @keyframes blinkRed {
+            0%, 100% { text-shadow: 0 0 5px #ef4444, 0 0 10px #ef4444; }
+            50% { text-shadow: 0 0 15px #ef4444, 0 0 25px #ff0000; }
+        }
+
+        .blink-red {
+            animation: blinkRed 1s ease-in-out infinite;
+        }
+
+        .step-transition {
+            transition: stroke-dashoffset 0.35s ease, stroke 0.3s ease, filter 0.3s ease;
+        }
+
+        /* Marquee Modern */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, rgba(239,68,68,0.1), transparent);
+            padding: 14px 0;
+            border-top: 1px solid rgba(239,68,68,0.2);
+            border-bottom: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+            padding-left: 100%;
+            font-weight: 600;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: #ef4444;
+            text-transform: uppercase;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        /* Tombol premium */
+        .btn-premium {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-premium:hover::before {
+            left: 100%;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-premium:active {
+            transform: translateY(0);
+        }
+
+        /* Stat card */
+        .stat-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Loading spinner keren */
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ef4444;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .glass-card {
+                padding: 1.5rem 0 !important;
+            }
+            .timer-font {
+                font-size: 2.2rem !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="w-full max-w-md px-4">
-        <div class="glass-card rounded-[2.5rem] pt-8 md:pt-10 pb-6 text-center relative overflow-hidden">
-            <!-- Header -->
-            <div class="mb-8 px-8">
-                <h1 class="text-xl font-bold tracking-tight mb-2">AUTOMATED TASK WORK SYSTEM</h1>
-                <p class="text-slate-400 text-sm leading-relaxed px-4">
-                    Sistem akan memproses secara otomatis hingga waktu yang ditentukan selesai.
+        <div class="glass-card rounded-3xl pt-10 pb-7 text-center relative overflow-hidden">
+            
+            <!-- Decorative corner accents -->
+            <div class="absolute top-4 left-4 w-12 h-12 border-t-2 border-l-2 border-red-500/30 rounded-tl-2xl"></div>
+            <div class="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 border-red-500/30 rounded-tr-2xl"></div>
+            <div class="absolute bottom-4 left-4 w-12 h-12 border-b-2 border-l-2 border-red-500/30 rounded-bl-2xl"></div>
+            <div class="absolute bottom-4 right-4 w-12 h-12 border-b-2 border-r-2 border-red-500/30 rounded-br-2xl"></div>
+
+            <!-- Header dengan badge -->
+            <div class="mb-6 px-8">
+                <div class="inline-block px-4 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-[11px] font-bold tracking-wider mb-4">
+                    ⚡ EXECUTIVE AUTOMATION ⚡
+                </div>
+                    <p class="text-slate-400 text-xs leading-relaxed px-4 tracking-wide">
+                    Sistem akan memproses secara otomatis hingga waktu yang ditentukan selesai
                 </p>
             </div>
-            <!-- Timer Circle -->
-            <div class="relative flex justify-center items-center mb-10 px-8">
-                <svg class="w-64 h-64">
-                    <!-- Background Circle -->
+
+            <!-- Timer Circle Premium -->
+            <div class="relative flex justify-center items-center mb-8 px-8">
+                <svg class="w-72 h-72" viewBox="0 0 256 256">
+                    <!-- Background Circle dengan efek -->
                     <circle
-                        class="text-slate-800"
-                        stroke-width="8"
+                        class="text-slate-700"
+                        stroke-width="6"
                         stroke="currentColor"
                         fill="transparent"
                         r="110"
                         cx="128"
                         cy="128"
+                        stroke-dasharray="15 10"
                     />
-                    <!-- Progress Circle -->
+                    <circle
+                        class="text-slate-800"
+                        stroke-width="10"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="110"
+                        cx="128"
+                        cy="128"
+                        opacity="0.3"
+                    />
+                    <!-- Progress Circle - MERAH ELEGAN -->
                     <circle
                         id="progress-circle"
                         class="step-transition"
                         stroke-width="8"
                         stroke-linecap="round"
-                        stroke="currentColor"
+                        stroke="#ef4444"
                         fill="transparent"
                         r="110"
                         cx="128"
                         cy="128"
-                        style="stroke-dasharray: 691; stroke-dashoffset: 0;"
+                        style="stroke-dasharray: 691.15; stroke-dashoffset: 0; transform: rotate(-90deg); transform-origin: 128px 128px;"
                     />
                 </svg>
-                <!-- Timer Content -->
+                <!-- Timer Content dengan efek -->
                 <div class="absolute flex flex-col items-center">
-                    <span id="timer-display" class="timer-font text-6xl font-bold tracking-tighter">05:00</span>
-                    <span class="text-xs tracking-[0.3em] text-slate-500 mt-2 uppercase font-semibold">Sisa Waktu</span>
+                    <span id="timer-display" class="timer-font text-5xl font-black tracking-wider text-white">05:00</span>
+                    <span class="text-[10px] tracking-[0.3em] text-red-400/70 mt-2 uppercase font-bold">SISA WAKTU</span>
                 </div>
             </div>
-            <!-- Action Buttons Container -->
-            <div id="controls" class="space-y-4 px-8 mb-8">
-                <!-- State 1: Start -->
-                <button id="btn-start" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95 glow-cyan">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5.14v14c0 .86.84 1.4 1.58.97l12-7c.74-.43.74-1.51 0-1.94l-12-7c-.74-.43-1.58.11-1.58.97z"/>
-                    </svg>
-                    MULAI
-                </button>
-                <!-- State 2: Progress -->
-                <div id="status-progress" class="hidden w-full bg-slate-800/50 border border-slate-700 text-amber-400 py-4 px-6 rounded-2xl flex items-center justify-center gap-3 animate-pulse-slow">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="font-medium">Work in progress...</span>
+
+            <!-- Info Panel -->
+            <div class="grid grid-cols-2 gap-3 px-8 mb-8">
+                <div class="stat-card rounded-xl p-3">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-wider">Status</p>
+                    <p id="status-label" class="text-sm font-bold text-emerald-400">● SIAP</p>
                 </div>
+                <div class="stat-card rounded-xl p-3">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-wider">WAKTU LIVE</p>
+                    <p class="text-sm font-mono font-bold text-red-400" id="live-clock"></p>
+                </div>
+            </div>
+
+            <!-- Action Buttons Container -->
+            <div id="controls" class="space-y-3 px-8 mb-7">
+                <!-- State 1: Start - MERAH PREMIUM -->
+                <button id="btn-start" class="btn-premium w-full text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 text-base tracking-wide">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 448 512" fill="currentColor">
+                        <path d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z"/>
+                    </svg>
+                    START PROCESS
+                </button>
+                
+                <!-- State 2: Progress -->
+                <div id="status-progress" class="hidden w-full bg-red-500/10 border border-red-500/40 rounded-xl py-4 px-6 flex items-center justify-center gap-3">
+                    <div class="loader"></div>
+                    <span class="font-semibold text-red-400 text-sm tracking-wide animate-pulse">PROCESSING...</span>
+                </div>
+                
                 <!-- State 3: Finished -->
-                <div id="state-finished" class="hidden space-y-4">
-                    <div class="w-full bg-green-500/10 border border-green-500/30 text-green-400 py-4 px-6 rounded-2xl flex items-center justify-center gap-2">
+                <div id="state-finished" class="hidden space-y-3">
+                    <div class="w-full bg-gradient-to-r from-emerald-500/10 to-emerald-600/5 border border-emerald-500/40 text-emerald-400 py-4 px-6 rounded-xl flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                         </svg>
-                        <span class="font-semibold">Waktu Selesai!</span>
+                        <span class="font-bold text-sm">PROCESS COMPLETED</span>
                     </div>
-                    <!-- Tombol Cek Komisi dengan fungsi kembali ke halaman sebelumnya -->
-                    <button onclick="window.location.href='https://gcmiss.shop/#/pages/home/index'"class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95 glow-green">
-                        Cek Komisi Sekarang
+                    <button onclick="window.location.href='https://gcmiss.shop/#/pages/home/index'" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
+                        CLAIM COMMISSION
                     </button>
                 </div>
             </div>
-            <!-- Teks Berjalan (Marquee) -->
-            <div class="marquee-container mb-6">
-                <div class="marquee-content text-xs font-medium uppercase tracking-widest">
-                   &bull; Sistem akan memproses secara otomatis hingga waktu yang di tentukan selesai &bull; Sistem akan memproses secara otomatis hingga waktu yang di tentukan selesai 
+
+            <!-- Teks Berjalan Modern dengan aksen merah -->
+            <div class="marquee-container">
+                <div class="marquee-content">
+                    🔴 Sistem akan memproses secara otomatis hingga waktu yang di tentukan selesai 🔴 &nbsp;&nbsp;||&nbsp;&nbsp; ⚡ EXECUTIVE PROCESSING ACTIVE ⚡ &nbsp;&nbsp;||&nbsp;&nbsp; ⚠️ DO NOT REFRESH OR CLOSE ⚠️
                 </div>
             </div>
+
             <!-- Footer -->
-            <div class="text-[10px] text-slate-500 uppercase tracking-widest opacity-60">
-                &copy; 2016 - 2025 Guccio Gucci S.p.A.
+            <div class="text-[9px] text-white uppercase tracking-wider mt-5 flex items-center justify-center gap-3">
+                <span>© 2016 - 2025 Guccio Gucci S.p.A.</span>
             </div>
         </div>
-        <script>        const btnStart = document.getElementById('btn-start');
-        const statusProgress = document.getElementById('status-progress');
-        const stateFinished = document.getElementById('state-finished');
-        const timerDisplay = document.getElementById('timer-display');
-        const progressCircle = document.getElementById('progress-circle');
+    </div>
 
-        let timeLeft = 300; 
-        const totalTime = 300;
-        const radius = 110;
-        const circumference = 2 * Math.PI * radius;
-        let timerId = null;
-
-        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-        progressCircle.style.strokeDashoffset = 0;
-        progressCircle.classList.add('text-cyan-400');
-
-        function updateTimer() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
+    <script>
+        (function() {
+            const btnStart = document.getElementById('btn-start');
+            const statusProgress = document.getElementById('status-progress');
+            const stateFinished = document.getElementById('state-finished');
+            const timerDisplay = document.getElementById('timer-display');
+            const progressCircle = document.getElementById('progress-circle');
+            const statusLabel = document.getElementById('status-label');
             
-            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            let timeLeft = 300;
+            const totalTime = 300;
+            const radius = 110;
+            const circumference = 2 * Math.PI * radius;
+            let timerId = null;
+            let isRunning = false;
             
-            const offset = circumference - (timeLeft / totalTime) * circumference;
-            progressCircle.style.strokeDashoffset = offset;
-
-            if (timeLeft <= 60) {
-                progressCircle.classList.remove('text-cyan-400');
-                progressCircle.classList.add('text-red-500');
-                timerDisplay.classList.add('text-red-500');
+            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+            progressCircle.style.strokeDashoffset = `0`;
+            
+            function updateTimer() {
+                if (timeLeft <= 0) {
+                    if (timerId) {
+                        clearInterval(timerId);
+                        timerId = null;
+                    }
+                    isRunning = false;
+                    timerDisplay.textContent = `00:00`;
+                    progressCircle.style.strokeDashoffset = `${circumference}`;
+                    showFinishedState();
+                    return;
+                }
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                const progress = timeLeft / totalTime;
+                const offset = circumference * (1 - progress);
+                progressCircle.style.strokeDashoffset = `${offset}`;
+                
+                if (timeLeft <= 60) {
+                    timerDisplay.classList.add('blink-red');
+                    progressCircle.setAttribute('stroke', '#ff4444');
+                    if (statusLabel) statusLabel.innerHTML = 'HAMPIR SELESAI⚠️';
+                    statusLabel.classList.add('blink-red');
+                } else {
+                    timerDisplay.classList.remove('blink-red');
+                    progressCircle.setAttribute('stroke', '#ef4444');
+                    if (statusLabel && !isRunning) {
+                        statusLabel.innerHTML = 'SIAP';
+                        statusLabel.classList.remove('blink-red');
+                    } else if (statusLabel && isRunning) {
+                        statusLabel.innerHTML = 'PROCESSING...';
+                        statusLabel.classList.remove('blink-red');
+                        statusLabel.classList.add('text-red-400');
+                    }
+                }
             }
-
-            if (timeLeft <= 0) {
-                clearInterval(timerId);
-                showFinishedState();
-            } else {
-                timeLeft--;
+            
+            function showFinishedState() {
+                if (timerId) {
+                    clearInterval(timerId);
+                    timerId = null;
+                }
+                isRunning = false;
+                
+                statusProgress.classList.add('hidden');
+                stateFinished.classList.remove('hidden');
+                btnStart.classList.add('hidden');
+                
+                progressCircle.setAttribute('stroke', '#334155');
+                progressCircle.style.filter = 'none';
+                timerDisplay.classList.remove('blink-red');
+                if (statusLabel) {
+                    statusLabel.innerHTML = '✓ SELESAI';
+                    statusLabel.classList.remove('text-red-400', 'blink-red');
+                    statusLabel.classList.add('text-emerald-400');
+                }
             }
-        }
-
-        function showFinishedState() {
-            statusProgress.classList.add('hidden');
-            stateFinished.classList.remove('hidden');
-            progressCircle.style.strokeDashoffset = circumference;
-            progressCircle.classList.remove('text-red-500');
-            progressCircle.classList.add('text-slate-800');
-        }
-
-        btnStart.addEventListener('click', () => {
-            btnStart.classList.add('hidden');
-            statusProgress.classList.remove('hidden');
+            
+            function resetToInitial() {
+                if (timerId) {
+                    clearInterval(timerId);
+                    timerId = null;
+                }
+                isRunning = false;
+                timeLeft = totalTime;
+                updateTimer();
+                progressCircle.setAttribute('stroke', '#ef4444');
+                progressCircle.style.filter = 'drop-shadow(0 0 12px #ef4444)';
+                progressCircle.style.strokeDashoffset = `0`;
+                timerDisplay.classList.remove('blink-red');
+                btnStart.classList.remove('hidden');
+                statusProgress.classList.add('hidden');
+                stateFinished.classList.add('hidden');
+                if (statusLabel) {
+                    statusLabel.innerHTML = '● SIAP';
+                    statusLabel.classList.remove('text-red-400', 'blink-red', 'text-emerald-400');
+                }
+            }
+            
+            function startTimer() {
+                if (isRunning) return;
+                
+                if (timeLeft <= 0) {
+                    resetToInitial();
+                }
+                
+                btnStart.classList.add('hidden');
+                statusProgress.classList.remove('hidden');
+                stateFinished.classList.add('hidden');
+                
+                if (statusLabel) {
+                    statusLabel.innerHTML = '● PROCESSING';
+                    statusLabel.classList.add('text-red-400');
+                }
+                
+                isRunning = true;
+                updateTimer();
+                
+                if (timerId) clearInterval(timerId);
+                timerId = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimer();
+                    } else {
+                        if (timerId) {
+                            clearInterval(timerId);
+                            timerId = null;
+                        }
+                        isRunning = false;
+                        showFinishedState();
+                    }
+                }, 1000);
+            }
+            
+            btnStart.addEventListener('click', startTimer);
+            
+            window.addEventListener('beforeunload', (e) => {
+                if (isRunning && timeLeft > 0 && timeLeft < totalTime) {
+                    const message = "⚠️ EXECUTIVE PROCESS ACTIVE ⚠️\nYakin ingin meninggalkan halaman?";
+                    e.preventDefault();
+                    e.returnValue = message;
+                    return message;
+                }
+            });
+            
+            function updateClock() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const timeString = `${hours}:${minutes}:${seconds}`;
+                const clockElement = document.getElementById('live-clock');
+                if (clockElement) {
+                    clockElement.textContent = timeString;
+                }
+            }
+            
+            updateClock();
+            setInterval(updateClock, 1000);
+            
             updateTimer();
-            timerId = setInterval(updateTimer, 1000);
-        });
-</script>
-  </div>
+        })();
+    </script>
 </body>
 </html>
